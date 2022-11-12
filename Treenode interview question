@@ -1,0 +1,113 @@
+#include <iostream>
+using namespace std;
+
+class Treenode {
+public:
+	int data;
+	int sz;
+	Treenode* left;
+	Treenode* right;
+};
+
+Treenode* newNode(int data) {
+	Treenode* node = new Treenode();
+	node->data = data;
+	node->sz = 0;
+	node->left = NULL;
+	node->right = NULL;
+	return node;
+}
+
+//int ans;
+//
+//void dfs(Treenode* u, int dep) {
+//	ans += dep;
+//	if (u->left)
+//		dfs(u->left, dep + 1);
+//	if (u->right)
+//		dfs(u->right, dep + 1);
+//}
+//
+//int ans1;
+//pair<int, int> dfs(Treenode* u) {
+//	pair<int, int> p = make_pair(1, 0);
+//	if (u->left) {
+//		pair<int, int> pchild = dfs(u->left);
+//		p.second += pchild.first + pchild.second;
+//		p.first += pchild.first;
+//	}
+//	if (u->right) {
+//		pair<int, int> pchild = dfs(u->right);
+//		p.second += pchild.first + pchild.second;
+//		p.first += pchild.first;
+//	}
+//	ans1 += p.second;
+//	return p;
+//}
+
+int ans3, n;
+
+pair<int, int> dfs1(Treenode* u) {
+	pair<int, int> p = make_pair(1, 0);
+	if (u->left) {
+		pair<int, int> pchild = dfs1(u->left);
+		p.second += pchild.first + pchild.second;
+		p.first += pchild.first;
+	}
+	if (u->right) {
+		pair<int, int> pchild = dfs1(u->right);
+		p.second += pchild.first + pchild.second;
+		p.first += pchild.first;
+	}
+	u->sz = p.first;
+	return p;
+}
+
+void dfs2(Treenode* u, int sumDists, int target) {
+	if (u->data == target)
+		ans3 = sumDists;
+	if (u->left) {
+		int newSumDists = sumDists - u->left->sz + (n - u->left->sz);
+		dfs2(u->left, newSumDists, target);
+	}
+	if (u->right) {
+		int newSumDists = sumDists - u->right->sz + (n - u->right->sz);
+		dfs2(u->right, newSumDists, target);
+	}
+}
+
+
+int main() {
+	cout << "Hello" << endl;
+	Treenode* root = newNode(1);
+	root->left = newNode(2);
+	root->right = newNode(3);
+	root->left->left = newNode(4);
+	root->left->right = newNode(5);
+	root->right->left = newNode(6);
+	root->right->right = newNode(7);
+	root->left->left->left = newNode(8);
+	root->left->left->right = newNode(9);
+
+	pair<int, int> p = dfs1(root);
+	n = root->sz;
+	dfs2(root, p.second, 4);
+
+	cout << "Answer 3 : " << ans3;
+	/*dfs(root, 0);
+	cout << "Answer dfs : "<< ans << endl;
+
+	dfs(root);
+	cout << "Answer dfs sum : " << ans1 << endl;*/
+
+	
+	//8(1,0) 9(1,0)
+	//4(1,0) 4(2,1) 4(3,2)
+	//					   5(1,0)
+	//              2(1,0) 2(4,5) 2(5,6)
+	//newSumDists = 16 - (5) + (9 - 5)
+	//            = 15
+
+	int x;
+	cin >> x;
+}
